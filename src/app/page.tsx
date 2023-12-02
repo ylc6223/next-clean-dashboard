@@ -7,7 +7,7 @@ export default function Home() {
                 <div className="flex flex-col min-w-[720px] h-full bg-[#3F8CFF]">
                     <span className="text-[40px] font-bold text-white mt-32 ml-16">Hi！你好！</span>
                     <span className="text-[40px] font-bold text-white mt-2 ml-16">欢迎进入数据管理平台</span>
-                    <img className="max-w-[500px] max-h-[373px] mt-16 mx-16" src="/Index/login.png" alt="welcome to data monitor platform"/>
+                    <Image className="max-w-[500px] max-h-[373px] mt-16 mx-16" src="/Index/login.png" alt="welcome to data monitor platform"/>
                 </div>
                 <div className="relative flex-1 flex flex-col items-center h-full">
                     <span className="mt-32 text-[#0A1629] font-bold text-2xl text-center">欢迎回来</span>
