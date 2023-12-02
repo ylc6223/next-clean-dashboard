@@ -34,3 +34,12 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+包裹类： container, wrapper, outer, inner, box, header, footer, main, content, aside, page, section, block
+状态类： primary, secondary, success, danger, warning, info, error, Link, light, dark, disabled, active, checked, loading
+尺寸类： large, middle, small, bigger, smaller
+组件类： card, list, picture, carousel, swiper, menu, navs, badge, hint, modal, dialog
+位置类： first, last, current, prev, next, forward, back
+文本类： title, desc, content, date, author, category,label,tag
+人物类： avatar, name, age, post, intro
+参考
