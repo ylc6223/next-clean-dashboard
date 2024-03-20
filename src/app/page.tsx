@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Nav from '@/app/components/nav';
 import logo from '@/assets/img/logo.svg';
-import { zcoolXiaoWei } from '@/app/ui/fonts';
 import clsx from 'clsx';
 
 interface socialIconProps {
@@ -128,7 +127,7 @@ export default function Page() {
             <div className="mx-auto max-w-2xl text-center">
               <h1
                 className={clsx(
-                  `text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl ${zcoolXiaoWei.className}`,
+                  `text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl`,
                 )}
               >
                 欢迎来到 DashEase.
