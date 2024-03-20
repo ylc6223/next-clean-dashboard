@@ -2,30 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
+.navbar {
+    @apply bg-white px-4 py-2 sticky top-0 z-10 transition ease-in-out duration-100 flex box-border h-[60px] shadow shadow-[#0000001a];
+}
+
+.navbar__innder {
+    @apply flex flex-wrap justify-between w-full;
+}
+
+.navbar__items {
+    @apply flex flex-1 items-center min-w-0;
+}
+
+.navbar__items--right {
+    @apply flex-[0_0_auto] justify-end;
+}
+
+.navbar-sidebar__backdrop {
+
+}
+
+/*指定标签的默认样式*/
+@layer base {
+    * {
+        box-sizing: border-box;
+    }
+
+    h1 {
+        @apply text-2xl;
+    }
+
+    h2 {
+        @apply text-xl;
+    }
+}
+
+/*能被 Tailwind工具类覆盖的组件类 为正在使用的任何第三方组件放置自定义样式的好地方*/
+@layer components {
+}
+
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+    :root {
+    }
 }
 
 body {
-  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #333;
 }
 
