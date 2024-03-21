@@ -236,7 +236,7 @@ CSS 模块允许在不同模块中使用相同的类名，从而促进模块化�
 
 
 
-### 3.优化字体和图像
+### 3.使用 Next.js 优化字体和图像
 
 #### 3.1优化图像和字体的目的
 
@@ -244,31 +244,33 @@ CSS 模块允许在不同模块中使用相同的类名，从而促进模块化�
 
 > 优化图像和字体对于提高网站性能、用户体验以及降低运营成本都非常重要
 
-- 移动设备性能优化
+- **移动设备性能优化**
 
 在移动设备上，带宽和处理能力可能有限。通过优化图像和字体，可以减少移动设备上的资源消耗，加载速度更快。
 
-- 响应式设计支持
+- **响应式设计支持**
 
 在响应式网站设计中，网站必须适应不同设备和屏幕尺寸。通过优化图像和字体，可以提供适合不同分辨率和屏幕尺寸的资源，使网站在各种设备上加载更快并呈现更好的外观。
 
-- 页面加载速度优化
+- **页面加载速度优化**
 
 大图像和未经优化的字体文件会增加网页的加载时间。优化图像和字体可以减少页面的文件大小，从而`加快页面加载速度`。这对于`提高用户体验`和`用户留存率`非常关键，因为用户更倾向于访问加载速度更快的网站。
 
-- 节省带宽
+- **节省带宽**
 
 优化图像和字体可以`节省服务器带宽`。减少传输的数据量有助于`降低服务器负载`，同时也`降低了网站的运营成本`，特别是对于流量较大的网站来说尤为重要。
 
-- 提高搜索引擎排名
+- **提高搜索引擎排名(SEO)**
 
 网站加载速度是搜索引擎排名的一个重要因素之一。通过优化图像和字体，可以提高网站的加载速度，从而有助于提高在搜索引擎中的排名。
 
-- 减少累积布局偏移
+- **减少累积布局偏移**
 
 **Cumulative Layout Shift**(简称CLS)是 Google 用于评估网站性能和用户体验的指标
 
 对于字体，当浏览器最初以后备字体或系统字体呈现文本，然后在加载后将其交换为自定义字体时，就会发生布局转换。这种交换可能会导致文本大小、间距或布局发生变化，从而移动其周围的元素。
+
+对于图像，防止图像加载时布局发生变化
 
 ![Mock UI showing initial load of a page, followed by a layout shift as the custom font loads.](https://nextjs.org/_next/image?url=%2Flearn%2Flight%2Ffont-layout-shift.png&w=3840&q=75&dpl=dpl_8iFhYcsMR1yZCSy8P48EVBnnKv9e)
 
@@ -343,6 +345,8 @@ export default function RootLayout({
 
 像这样，通过添加`Noto_Sans`到`<body>`元素，字体将作用于整个项目。在这里，我们还添加了 Tailwind[`antialiased`](https://tailwindcss.com/docs/font-smoothing)平滑字体的类。没有必要使用这个类，但它增加了一个不错的感觉。
 
+> `/app/layout.tsx`这称为根布局并且是必需的。添加到根布局的任何 UI 将在所有页面之间共享。可以使用根布局来修改 `<html>` 和 `<body>` 标记，并添加元数据
+
 ok，让我们回到浏览器界面，F12，打开开发工具并选择`body`元素。可以看到`Noto_Sans`并且`Noto_Sans_Fallback`现在已应用在样式下
 
 ![image-20240321014441789](README.assets/image-20240321014441789.png)
@@ -408,6 +412,135 @@ export default function Page() {
 
 太棒了，现在已经向项目添加了两种自定义字体！接下来，让我们向主页添加Hero图片并对图片进行优化
 
+Next.js 可以在**顶级[`/public`](https://nextjs.org/docs/app/building-your-application/optimizing/static-assets)**目录下提供静态资源，例如图像。`/public`里面的文件可以在你的项目中引用。
+
+![image-20240321035536557](README.assets/image-20240321035536557.png)
+
+在以往常规的HTML中,我们使用图片可能会这样做:
+
+```
+<img
+  src="https://tailwindui.com/img/component-images/project-app-screenshot.png"
+  alt="App screenshot"
+  width={2432}
+  height={1442}
+  className="rounded-md shadow-2xl ring-1 ring-gray-900/10"
+/>
+```
+
+但是这样做有几个需要手动进行处理的地方
+
+- [需要确保图片在不同的屏幕尺寸上都能响应](https://developer.mozilla.org/zh-CN/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images)。
+
+```
+<img
+  srcset="elva-fairy-480w.jpg 480w, elva-fairy-800w.jpg 800w"
+  sizes="(max-width: 600px) 480px,
+         800px"
+  src="elva-fairy-800w.jpg"
+  alt="Elva dressed as a fairy" />
+```
+
+- 需要指定不同设备的图像尺寸，根据不同设备的屏幕大小载入合适分辨率的图片。
+
+例如为了在宽屏和窄屏上都能显示合适的图片，我们可能会写如下所示这样的代码：
+
+```
+<picture>
+  <source media="(max-width: 799px)" srcset="elva-480w-close-portrait.jpg" />
+  <source media="(min-width: 800px)" srcset="elva-800w.jpg" />
+  <img src="elva-800w.jpg" alt="Chris standing up holding his daughter Elva" />
+</picture>
+```
+
+- 需要防止图像加载时布局发生变化(累积布局偏移)。
+
+![image-20240321154225108](README.assets/image-20240321154225108.png)
+
+在网络的早期，开发人员在其 `<img>` 标记中添加了 `width` 和 `height` 属性，以确保在浏览器开始获取之前在页面上分配了足够的空间图片。这将最大限度地减少回流和重新布局。
+
+```
+<img src="puppy.jpg" width="640" height="360" alt="Puppy with balloons">
+```
+
+此示例中的 `width` 和 `height` 不包含单位。这些“像素”尺寸将确保浏览器保留 640x360 的区域。无论真实尺寸是否与其匹配，图像都会拉伸以适合该空间。
+
+当响应式网页设计被引入时，开发人员开始使用 CSS 来调整图像大小，而不是 `width` 和 `height` ：
+
+```
+img {
+  width: 100%; /* or max-width: 100%; */
+  height: auto;
+}
+```
+
+但是，由于未指定图像大小，因此在浏览器开始下载图像并确定其尺寸之前，无法为其分配空间。当图像加载时，文本会向下移动页面以为它们腾出空间，从而造成令人困惑和令人沮丧的用户体验。
+
+- 延迟加载用户视口之外的图像。(懒加载)
+
+别担心，这些在使用Next.js后无需再手动进行处理。使用`next/image` 组件自动优化图像，而不是手动实现这些优化。
+
+##### 3.3.1引入内置Image组件
+
+> `<Image>` 组件是 HTML `<img>` 标签的扩展，并且具有自动图像优化功能，例如：
+
+- 加载图像时自动防止累积布局偏移。
+- 移动端性能优化，调整图像大小以避免将大图像传送到具有较小视口的设备。
+- 默认情况下延迟加载图像（图像在进入视口时加载）。
+- 当浏览器支持时，以现代格式（例如 WebP 和 AVIF）提供图像。像 [WebP](https://developer.mozilla.org/zh-CN/docs/Web/Media/Formats/Image_types#webp_image) 和 [AVIF](https://developer.mozilla.org/zh-CN/docs/Web/Media/Formats/Image_types#avif_image) 等新型图片格式可以做到高质量的同时保持较低的文件大小，如今这些格式已有相对广泛的浏览器支持，且几乎没有“历史包袱”。
+
+`/app/page.tsx`
+
+```
+import Image from 'next/image';
+```
+
+让我们使用 `<Image>` 组件。如果您查看 `/public` 文件夹内部，会看到有两个图像： `hero-desktop.png` 和 `hero-mobile.png` 。这两个图像完全不同，它们的显示取决于用户的设备是台式机还是移动设备。
+
+![image-20240321163537050](README.assets/image-20240321163537050.png)
+
+添加图片：
+
+`/app/page.tsx`
+
+```
+//...省略
+import Image from 'next/image';
+//...省略
+
+export default function Page() {
+  return (
+    <main className="flex min-h-screen flex-col">
+			{/* Add Hero Images Here */}
+       <Image
+        src="/hero-desktop.png"
+        alt="App screenshot"
+        width={1216}
+        height={721}
+        className="rounded-md shadow-2xl ring-1 ring-gray-900/10"
+        />
+    </main>
+  );
+}
+```
+
+ `width` 设置为 `1216` ，将 `height` 设置为 `721` 像素。最好指定图像的 `width` 和 `height` 以[预防布局偏移](https://web.dev/articles/optimize-cls#images-without-dimensions)，它们的宽高比应与源图像相同。
+
+类 `hidden` 用于从移动屏幕上的 DOM 中删除图像，而 `md:block` 用于在桌面屏幕上显示图像。
+
+![image-20240321164420387](README.assets/image-20240321164420387.png)
+
+ok保存更改，回到浏览器，我们的主页现在应该是这样的：
+
+![Styled home page with a custom font and hero image](https://nextjs.org/_next/image?url=%2Flearn%2Flight%2Fhome-page-with-hero.png&w=1920&q=75&dpl=dpl_EAxsSpP5XfNYWwtSi8TmDhEh1kzk)
+
+##### 练习:添加移动端的Hero图像
+
+现在轮到你了！在刚刚添加的图像下，为 `hero-mobile.png` 添加另一个 `<Image>` 组件。
+
+- 该图像的 `width` 像素应为 `560` ， `height` 像素为 `620` 。
+- 它应该显示在移动屏幕上，并隐藏在桌面上 - 你可以使用开发工具检查桌面和移动图像是否正确交换。
+
 #### 课后思考
 
 你可能对下列的描述感到困惑
@@ -415,6 +548,274 @@ export default function Page() {
 > **Next会在构建时下载字体文件并将它们与其他静态资产一起托管**。为什么说不会产生额外的网络请求?
 
 在构建过程中例如 `next build`，Next.js 会下载字体文件并将它们与其他静态资产一起托管。这意味着字体文件将会被打包进你的 Next.js 应用程序的构建输出中例如dist文件夹。当用户访问你的应用程序时，这些字体文件将会从与应用程序相同的服务器上提供，而不需要额外的网络请求。这样就避免了从外部 CDN 或字体服务器请求字体文件的网络开销，因此说不会产生额外的网络请求。
+
+> [发生累积布局偏移CLS常见的原因有？](https://web.dev/articles/optimize-cls#common-causes-of-cls)
+
+- 没有尺寸的图像
+- 广告、嵌入内容和其他延迟加载的内容
+- 网络字体
+
+**参考文档**
+
+- [图像优化](https://nextjs.org/docs/app/building-your-application/optimizing/images)
+- [字体优化](https://nextjs.org/docs/app/building-your-application/optimizing/fonts)
+- [利用图像提高 Web 性能](https://developer.mozilla.org/en-US/docs/Learn/Performance/Multimedia)
+- [网络字体](https://developer.mozilla.org/en-US/docs/Learn/CSS/Styling_text/Web_fonts)
+
+### 4.创建布局和页面以及路由
+
+到目前为止，整个项目只有一个主页。下面让我们了解如何使用布局和页面创建更多路由。
+
+#### 4.1使用Next嵌套路由创建仪表盘页面和公共layout
+
+> [Next.js 提供了一组特殊文件来创建在嵌套路由中具有特定行为的 UI：](https://nextjs.org/docs/app/building-your-application/routing#file-conventions)你需要按照以下约定来创建文件名
+
+| 文件名(约定好的不能更改的名字) | 作用                                                         |
+| ------------------------------ | ------------------------------------------------------------ |
+| layout                         | 段及其子段的共享 UI，例如 ( `/app/dashboard/layout.tsx` ) 是`/app/dashboard/*`独有的，任何匹配到的路由都将共享这一UI。 |
+| page                           | 路由的出口，可公开访问的                                     |
+| loading                        | 段及其子段进行加载时所展示的UI                               |
+| not-found                      | 未匹配到段及其子段路由时的 UI                                |
+| error                          | 段及其子段发生错误时的 UI                                    |
+| global-error                   | 全局错误用户界面                                             |
+| route                          | 服务器端 API 端点，可用于创建后端API                         |
+| template                       |                                                              |
+| default                        |                                                              |
+
+你可以使用 `layout.tsx` 和 `page.tsx` 文件为每个路由创建单独的布局的UI。
+
+`page.tsx` 是一个特殊的 Next.js 文件，用于导出 React 组件，并且需要它才能访问路由。在项目app目录中中，已经提前创建有一个页面文件： `/app/page.tsx` - 这是与根路径 `/` 关联的主页。
+
+![image-20240321174659073](README.assets/image-20240321174659073.png)
+
+`/app/dashboard/page.tsx` 与 `/dashboard` 路径关联。下面让我们创建页面来看看它是如何工作的！
+
+在 `/app` 内创建一个名为 `dashboard` 的新文件夹。然后，在 `dashboard` 文件夹中创建一个新的 `page.tsx` 文件，其中包含以下内容：
+
+`/app/dashboard/page.tsx`
+
+```
+export default function Page() {
+  return <p>仪表盘页面</p>;
+}
+```
+
+运行npm run dev
+
+本地开发环境访问http://localhost:3000/dashboard，可以看到“仪表板页面”文本。
+
+以上就是在 Next.js 中创建不同页面的方法：使用文件夹创建一个新的路由段，并在其中添加一个 `page` 文件。
+
+> 通过为 `/page` 文件指定一个特殊名称，Next.js 允许你将 UI 组件、测试文件和其他相关代码与你的路由并置。只有 `page` 文件中的内容可以公开访问。例如， `/ui` 和 `/lib` 文件夹与你的路径一起位于 `/app` 文件夹内。
+
+让我们按照以上方法继续创建以下两个页面
+
+- 客户页面
+
+  该页面应可通过 http://localhost:3000/dashboard/customers 访问。目前，它应该返回一个 `<p>客户页面</p>` 元素。
+
+  ```
+  export default function Page() {
+    return (
+      <div className="flex min-h-screen w-screen items-center justify-center bg-[#F4F9FD]">
+        客户页面
+      </div>
+    );
+  }
+  ```
+
+  ![image-20240321181955417](README.assets/image-20240321181955417.png)
+
+- 发票页面
+
+  发票页面应可通过 http://localhost:3000/dashboard/invoices 访问。现在，还返回一个 `<p>发票页面</p>` 元素。
+
+  ```
+  export default function Page() {
+    return (
+      <div className="flex min-h-screen w-screen items-center justify-center bg-[#F4F9FD]">
+        发票页面
+      </div>
+    );
+  }
+  ```
+
+  ![image-20240321182026407](README.assets/image-20240321182026407.png)
+
+> 仪表盘具有某种跨多个页面共享的导航。在 Next.js 中，我们使用特殊的 `layout.tsx` 文件来创建在多个页面之间共享的 UI。让我们为仪表板页面创建一个布局！
+
+在 `/dashboard` 文件夹中，添加一个名为 `layout.tsx` 的新文件并粘贴以下代码：
+
+`/app/dashboard/layout.tsx`
+
+```
+import SideNav from '@/app/ui/dashboard/sidenav';
+ 
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex h-screen flex-col md:flex-row md:overflow-hidden">
+      <div className="w-full flex-none md:w-64">
+        <SideNav />
+      </div>
+      <div className="flex-grow p-6 md:overflow-y-auto md:p-12">{children}</div>
+    </div>
+  );
+}
+```
+
+在此布局页中，将 `<SideNav />` 组件导入到layout.tsx当中。任何导入到此文件中的任何组件都将成为`/app/dashboard/`布局的一部分，在没有任何自定义情况下。所有匹配`/app/dashboard/*`的路由都将共享相同的UI界面
+
+`<Layout />` 组件接收 `children` 属性。该子项可以是页面或其他布局。在当前项目里， `/dashboard` 内的页面将自动嵌套在 `<Layout />` 内，如下所示：
+
+![image-20240321195833088](README.assets/image-20240321195833088.png)
+
+保存更改并预览来检查一切是否正常工作。看到以下内容：
+
+![image-20240321200046802](README.assets/image-20240321200046802.png)
+
+> 在 Next.js 中使用布局的好处之一是，在导航时，只有页面组件会更新，而布局不会重新呈现。这称为部分渲染：
+
+![image-20240321200755178](README.assets/image-20240321200755178.png)
+
+
+
+#### 了解什么是共置、部分渲染和根布局。
+
+[关于并置:](https://medium.com/trabe/colocating-react-component-files-the-tools-you-need-c377a61382d3)
+
+- 关于嵌套路由:
+
+Next.js 使用文件系统路由，其中文件夹用于创建嵌套路由。每个文件夹代表一个映射到 URL 段的路由段。
+
+要创建嵌套路由，可以将文件夹相互嵌套。例如，可以通过在 `app` 目录中嵌套两个新文件夹来添加新的 `/dashboard/invoices` 路由。
+
+路由由三段组成：
+
+- `/` (Root segment，也称为根段) `/` （也称为根段）
+- `dashboard` (Segment，称为段)
+- `settings` (Leaf segment，叶段)
+
+![image-20240321172716592](README.assets/image-20240321172716592.png)
+
+- 部分渲染
+- 在导航时，只有页面组件会更新，而布局不会重新呈现。这称为部分渲染：
+
+### 5.路由导航
+
+#### 5.1使用Link组件完成页面导航
+
+在页面之间进行跳转，传统上会使用`<a>`HTML 元素。目前，侧边栏链接使用`<a>`元素，但这样做会导致发票和客户页面之间导航时页面会整体刷新，可以通过浏览器地址栏以及开发者工具来验证这一点，每一次跳转都将导致页面的整体刷新和资源的重新加载，显然这不是我们想要看到的。
+
+![Mar-22-2024 03-48-22](README.assets/Mar-22-2024 03-48-22.gif)
+
+Next提供了Link组件用来在页面之间进行跳转。
+
+下面对侧边栏菜单的链接进行修改：
+
+```
+import {
+  UserGroupIcon,
+  HomeIcon,
+  DocumentDuplicateIcon,
+} from '@heroicons/react/24/outline';
+import Link from 'next/link';
+ 
+// ...
+ 
+export default function NavLinks() {
+  return (
+    <>
+      {links.map((link) => {
+        const LinkIcon = link.icon;
+        return (
+          <Link
+            key={link.name}
+            href={link.href}
+            className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+          >
+            <LinkIcon className="w-6" />
+            <p className="hidden md:block">{link.name}</p>
+          </Link>
+        );
+      })}
+    </>
+  );
+}
+```
+
+保存更改并预览。现在应该能够在页面之间导航，地址栏虽然发生了变化，但页面并没有整体刷新。
+
+![Mar-22-2024 03-45-19](README.assets/Mar-22-2024 03-45-19.gif)
+
+
+
+Next.js 自动按路线段对项目进行代码分割。这与传统的 React SPA 不同，在传统的 React SPA 中，浏览器在初始加载时加载所有代码，从页面渲染到完成耗时较长时间。
+
+同时，因为代码分割，如果某个页面抛出错误，其余页面仍然可以工作不会受到影响。
+
+并且在生产环境中，只要 `<Link>` 组件出现在浏览器的视口中，Next.js 就会自动在后台预取链接路由的代码。当用户单击链接时，目标页面的代码将已经在后台加载，这使得页面加载非常快！
+
+#### 5.2利用钩子函数获取当前路径并高亮选中
+
+侧边栏常见的做法是高亮显示活动链接以向用户指示当前所在的页面。为此，需要从 URL 获取用户的当前路径。 Next.js 提供了一个名为的钩子[`usePathname()`](https://nextjs.org/docs/app/api-reference/functions/use-pathname)使用它来获取当前浏览器路径URL。
+
+[`usePathname()`](https://nextjs.org/docs/app/api-reference/functions/use-pathname)是一个钩子，hooks只能用在客户端组件上，需要将`nav-links.tsx`声明为客户端组件。将 React 的`"use client"`指令添加到文件顶部，然后`usePathname()`导入`next/navigation`并获取当前浏览器URL 的path部分：
+
+`/app/ui/dashboard/nav-links.tsx`
+
+```
+'use client';
+ 
+import {
+  UserGroupIcon,
+  HomeIcon,
+  InboxIcon,
+} from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+// ...
+export default function NavLinks() {
+	//获取地址栏URL 的路径部分，从根路径/开始
+  const pathname = usePathname();
+  // ...
+}
+```
+
+给选中页面的侧边栏链接加上高亮效果：
+
+![image-20240322042418144](README.assets/image-20240322042418144.png)
+
+保存并预览。活动链接以蓝色突出显示。
+
+![Mar-22-2024 04-27-15](README.assets/Mar-22-2024 04-27-15.gif)
+
+#### 5.3Link工作原理
+
+https://nextjs.org/learn/dashboard-app/navigating-between-pages#:~:text=Learn%20more%20about-,how%20navigation%20works,-.
+
+### 6.设置数据库
+
+> 关于vercel:
+
+首先需要将项目推送到 GitHub。
+
+
+
+注册 Vercel 帐户并选中对应的 GitHub 存储库提供给vercel以进行即时预览和部署。根据自己需求选中对应的仓库就好
+
+- 导入仓库
+
+![image-20240322062120979](README.assets/image-20240322062120979.png)
+
+- 为项目命名并单击部署
+
+![image-20240322062411943](README.assets/image-20240322062411943.png)
+
+![image-20240322061958227](README.assets/image-20240322061958227.png)
+
+创建项目并将其链接到 Postgres 数据库。
+
+使用初始数据为数据库播种。
 
 ## 依赖介绍
 

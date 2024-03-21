@@ -159,14 +159,25 @@ export default function Page() {
               </div>
             </div>
             <div className="mt-16 flow-root sm:mt-24">
-              <div className="-m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
-                {/* Add Hero Images Here */}
-                <img
-                  src="https://tailwindui.com/img/component-images/project-app-screenshot.png"
-                  alt="App screenshot"
-                  width={2432}
-                  height={1442}
+              <div className="-m-2 hidden rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 md:block lg:-m-4 lg:rounded-2xl lg:p-4">
+                {/* Add Desktop Hero Images Here */}
+                <Image
+                  src="/hero-desktop.png"
+                  alt="Screenshots of the dashboard project showing desktop version"
+                  width={1216}
+                  height={721}
                   className="rounded-md shadow-2xl ring-1 ring-gray-900/10"
+                />
+              </div>
+
+              <div className="-m-2 block rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 md:hidden lg:-m-4 lg:rounded-2xl lg:p-4">
+                {/* Add Mobile Hero Images Here */}
+                <Image
+                  src="/hero-mobile.png"
+                  width={560}
+                  height={620}
+                  className="block md:hidden"
+                  alt="Screenshot of the dashboard project showing mobile version"
                 />
               </div>
             </div>

@@ -15,7 +15,7 @@
 }
 
 .navbar__items--right {
-    @apply flex-[0_0_auto] justify-end;
+    @apply flex-[0_0_auto] min-w-[48px] justify-end;
 }
 
 .navbar-sidebar__backdrop {

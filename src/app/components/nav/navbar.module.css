@@ -1,0 +1,43 @@
+.hamburger-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 30px;
+    height: 30px;
+    margin: auto;
+}
+
+.hamburger-container span {
+    display: block;
+    height: 2px;
+    background-color: #4587f6;
+    position: relative;
+    transition: transform .3s ease-in-out, top .3s ease-in-out .3s, opacity .01s linear .3s;
+    top: 0;
+    opacity: 1;
+}
+
+.hamburger-container span:nth-child(2) {
+    margin: 8px 0;
+}
+
+#toggler:checked ~ label .hamburger-container span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 12px;
+    transition: top .3s ease-in-out, transform .3s ease-in-out .3s;
+}
+
+#toggler:checked ~ label .hamburger-container span:nth-child(3) {
+    transform: rotate(-45deg);
+    top: -12px;
+    transition: top .3s ease-in-out, transform .3s ease-in-out .3s;
+}
+
+#toggler:checked ~ label .hamburger-container span:nth-child(2) {
+    opacity: 0;
+    transition: opacity .01s linear .3s;
+}
+
+#toggler {
+    display: none;
+}
